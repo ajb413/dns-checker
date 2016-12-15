@@ -2,8 +2,8 @@ var Converter = require("csvtojson").Converter;
 var fs = require("fs"); 
 
 //CSV File Path or CSV String or Readable Stream Object
-var csvFileName = "./nameservers-all.csv";
-var jsonFileName = "./nameservers-all.json";
+var csvFileName = "./nameservers.csv";
+var jsonFileName = "./nameservers.json";
 
 //new converter instance
 var csvConverter = new Converter({});
