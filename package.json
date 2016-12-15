@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "csvtojson" : "latest"
+  , "native-dns" : "latest"
+  }
+}
