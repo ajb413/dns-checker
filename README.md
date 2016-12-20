@@ -13,6 +13,7 @@ Public DNS list from http://public-dns.info/
 Get DNS csv.
 
 `npm install
+
 npm start`
 
 
