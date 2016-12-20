@@ -12,9 +12,9 @@ Public DNS list from http://public-dns.info/
 
 Get DNS csv.
 
-`npm install
+`npm install`
 
-npm start`
+`npm start`
 
 
 
