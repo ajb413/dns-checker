@@ -118,7 +118,6 @@ function digController ( dnsToTest, domainToTest ) {
 
 		function forLoop ( iteration, length ) {
 			dig(dnsToTest, domainToTest).then(function ( result ) {
-				console.log(dnsToTest+", "+domainToTest+", "+iteration);
 				if (result) {
 					resolve(true);
 				}
