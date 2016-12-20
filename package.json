@@ -1,7 +1,9 @@
 {
   "dependencies": {
-    "csvtojson" : "latest"
-  , "native-dns" : "latest"
-  , "async" : "latest"
+    "csvtojson"  : "latest",
+    "native-dns" : "latest",
+    "async"      : "latest",
+    "sqlite3"    : "latest",
+    "pubnub"     : "latest"
   }
 }

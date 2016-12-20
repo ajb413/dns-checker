@@ -1,55 +1,39 @@
-let dns = require("native-dns");
-let dnsList  = require("./nameservers.json")["dns"];
+const common = require('./common.js');
+const async = require('async');
 
-//testing domains
-let google = "google.com";
-let baidu  = "baidu.com";
-let wiki   = "wikipedia.com";
-let pubnub = "pubsub.pubnub.com";
+module.exports = {
+	"start" : start
+}
 
-for ( let [i, dns] of dnsList.entries() ) {
-	let googleDig = dig(dns.ip, google);
-	let baiduDig  = dig(dns.ip, baidu);
-	let wikiDig   = dig(dns.ip, wiki);
-	let pubnubDig = dig(dns.ip, pubnub);
-
-	Promise.all([googleDig, baiduDig, wikiDig, pubnubDig]).then(digs => {
-		let res = {
-			"name_server" : dns.ip,
-			"domain"	  : dns.name,
-			"date"		  : new Date(),
-			"google" 	  : digs[0],
-			"baidu" 	  : digs[1],
-			"wikipedia"   : digs[2],
-			"pubnub" 	  : digs[3]
-		};
-
-		if ((res.google || res.baidu || res.wikipedia) && !res.pubnub)
-		{
-			console.log(JSON.stringify(res.domain));
-		}
+function start() {
+	return new Promise(( resolve, reject ) => {
+		common.getDnsList().then(function ( dnsList ) {
+			main(dnsList).then(function ( doneList ) {
+				resolve(doneList);
+			});
+		});
 	});
 }
 
-function dig ( dnsToTest, domainToTest ) {
-	return new Promise((resolve, reject) => {
-		let req = dns.Request({
-			"question"	: dns.Question({
-				"name"	: domainToTest,
-				"type"	: 'A',
-			}),
-			server: { "address": dnsToTest, port: 53, type: 'udp' },
-			timeout: 15000,
+function main ( dnsList ) {
+	return new Promise(( resolve, reject ) => {
+		let doneList = [];
+		async.eachLimit(dnsList, common.concurrency_limit,
+			function ( dns, callback ) {
+				var digs = [];
+				for (let domain of common.test_domains) {
+					digs.push(common.dig( dns.ip, domain.name ));
+				}
+				Promise.all(digs).then( results => {
+					//logic in main.js
+					common.updateDnsRecord( dns, results ).then(function (updatedDns) {
+						doneList.push(updatedDns);
+						console.log(updatedDns);
+						callback();
+					});
+				});
+			}, function () {
+				resolve(doneList);
 		});
-
-		req.on( 'timeout', function () {
-			return resolve(false);
-		});
-
-		req.on( 'message', function ( err, answer ) {
-			return resolve(err ? false : true);
-		});
-
-		req.send();
 	});
 }
