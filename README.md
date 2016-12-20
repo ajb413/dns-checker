@@ -18,18 +18,21 @@ Get DNS csv.
 
 
 
-`//dependency versions tested with:
-"csvtojson"  : "1.0.3",
-"native-dns" : "0.7.0",
-"async"      : "2.1.4",
-"sqlite3"    : "3.1.8",
-"pubnub"     : "4.3.2"`
+`	//dependency versions tested with:
+	"csvtojson"  : "1.0.3",
+	"native-dns" : "0.7.0",
+	"async"      : "2.1.4",
+	"sqlite3"    : "3.1.8",
+	"pubnub"     : "4.3.2"`
 
 
 
 
 TODO:
+
 Make this db agnostic.
+
 Make adding other domains to test simpler. Right now you have to add it in several places.
+
 Determine what causes the concurrency bottleneck and attempt to optimize.
  
