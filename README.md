@@ -10,12 +10,15 @@ Public DNS list from http://public-dns.info/
 
 ## To run:
 Get DNS csv.
-```npm install
-npm start```
+```
+npm install
+npm start
+```
 
 
 
-```	//dependency versions tested with:
+```
+//dependency versions tested with:
 	"csvtojson"  : "1.0.3",
 	"native-dns" : "0.7.0",
 	"async"      : "2.1.4",
