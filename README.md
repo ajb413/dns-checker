@@ -2,7 +2,7 @@
 
 Check if a site is blocked using node.js to do `dig @ip domain`. Writes results to a sqlite db.
 
-Does not work if too many dig commands are run at a time (main.js).
+Does not work if too many dig commands are run at a time (settings.js).
 
 Settings in main.js
 
