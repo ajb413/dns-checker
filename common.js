@@ -1,23 +1,23 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // Imports
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-const main       = require('./main.js');
-const ispApi     = require('./isp_api.js');
-const sqlite     = require('sqlite3').verbose();
-const pubnub     = require('pubnub');
-const dns_module = require('native-dns');
+const settings = require('./settings.js');
+const ispApi   = require('./isp_api.js');
+const sqlite   = require('sqlite3').verbose();
+const pubnub   = require('pubnub');
+const dig      = require('./datagram.js')['dig'];
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // PubNub
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 let pn = new pubnub({
-	  "publishKey"   : main.pn_settings.pn_pub_key
-	, "subscribeKey" : main.pn_settings.pn_sub_key
+	  "publishKey"   : settings.pn_settings.pn_pub_key
+	, "subscribeKey" : settings.pn_settings.pn_sub_key
 });
 
 function pn_publish ( msg ) {
 	pn.publish({
-		  "channel" : main.pn_settings.pn_channel
+		  "channel" : settings.pn_settings.pn_channel
 		, "message" : msg
 	});
 }
@@ -26,8 +26,8 @@ function pn_publish ( msg ) {
 // SQLite
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 function getDnsList () {
-	return new Promise((resolve, reject) => {
-		let db = new sqlite.Database(main.db_file);
+	return new Promise(( resolve, reject ) => {
+		let db = new sqlite.Database(settings.db_file);
 		db.serialize(function() {
 			var sql = "SELECT * FROM DNS";
 
@@ -59,7 +59,7 @@ let upsertQuery = `
 
 function upsert ( rows ) {
 	return new Promise(( resolve, reject ) => {
-		let db = new sqlite.Database(main.db_file);
+		let db = new sqlite.Database(settings.db_file);
 		db.serialize(function() {
 			rows.forEach(function( dns, i ) {
 				db.run(upsertQuery, [
@@ -79,7 +79,7 @@ function upsert ( rows ) {
 				], function ( err ) {
 					if (err) reject();
 				});
-				if (i === rows.length-1) resolve();
+				if ( i === rows.length-1 ) resolve();
 			});
 		});
 	});
@@ -99,7 +99,7 @@ let unresolvedQuery = `
 
 function getUnresolved () {
 	return new Promise(( resolve, reject ) => {
-		let db = new sqlite.Database(main.db_file);
+		let db = new sqlite.Database(settings.db_file);
 		db.serialize(function() {
 			db.all(unresolvedQuery, function( err, rows ) {
 				if (err) reject();
@@ -110,51 +110,26 @@ function getUnresolved () {
 }
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// Executes dig main.dig_retries times before deciding it has failed
+// Executes dig settings.dig_retries times before deciding it has failed
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-function digController ( dnsToTest, domainToTest ) {
+function digController ( dnsToTest, domainToTest, digSettings ) {
 	return new Promise(( resolve, reject ) => {
-		forLoop(0, main.dig_retries);
+		seriesLoop(0, digSettings.retries);
 
-		function forLoop ( iteration, length ) {
-			dig(dnsToTest, domainToTest).then(function ( result ) {
+		function seriesLoop ( iteration, length ) {
+			dig(dnsToTest, domainToTest, digSettings)
+			.then(function ( result ) {
 				if (result) {
 					resolve(true);
 				}
-				if (!result && iteration < length-1) {
-					forLoop(iteration+1, length);
+				if (!result && iteration+1 < length) {
+					seriesLoop(iteration+1, length);
 				}
-				if (!result && iteration === length-1) {
+				else {
 					resolve(false);
 				}
 			});
 		}
-	});
-}
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// dig - node js version of the unix command
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-function dig ( dnsToTest, domainToTest ) {
-	return new Promise(( resolve, reject ) => {
-		let req = dns_module.Request({
-			"question" : dns_module.Question({
-				"name" : domainToTest,
-				"type" : 'A',
-			}),
-			server: { "address": dnsToTest, port: 53, type: 'udp' },
-			timeout: main.dig_timeout,
-		});
-
-		req.on( 'timeout', function () {
-			return resolve(false);
-		});
-
-		req.on( 'message', function ( err, answer ) {
-			return resolve(err ? false : true);
-		});
-
-		req.send();
 	});
 }
 
@@ -168,9 +143,10 @@ module.exports = {
 	, "pn_publish"        : pn_publish
 	, "dig"               : digController
 	, "getIsps"			  : ispApi.get
-	, "concurrency_limit" : main.concurrency_limit
-	, "test_domains"      : main.test_domains
-	, "updateDnsRecord"   : main.updateDnsRecord
-	, "csv"               : main.csv
-	, "db_file"           : main.db_file
+	, "dig_settings"      : settings.dig_settings
+	, "concurrency_limit" : settings.concurrency_limit
+	, "test_domains"      : settings.test_domains
+	, "updateDnsRecord"   : settings.updateDnsRecord
+	, "csv"               : settings.csv
+	, "db_file"           : settings.db_file
 };

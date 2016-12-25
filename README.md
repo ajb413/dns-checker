@@ -8,31 +8,26 @@ Settings in main.js
 
 Public DNS list from http://public-dns.info/
 
-
-
+## To run:
 Get DNS csv.
-
-`npm install`
-
-`npm start`
+```npm install
+npm start```
 
 
 
-`	//dependency versions tested with:
+```	//dependency versions tested with:
 	"csvtojson"  : "1.0.3",
 	"native-dns" : "0.7.0",
 	"async"      : "2.1.4",
 	"sqlite3"    : "3.1.8",
-	"pubnub"     : "4.3.2"`
+	"pubnub"     : "4.3.2"
+```
 
 
 
 
-TODO:
-
-Make this db agnostic.
-
-Make adding other domains to test simpler. Right now you have to add it in several places.
-
-Determine what causes the concurrency bottleneck and attempt to optimize.
+## TODO:
+- Make this db agnostic.
+- Make adding other domains to test simpler. Right now you have to add it in several places.
+- Determine what causes the concurrency bottleneck and attempt to optimize.
  

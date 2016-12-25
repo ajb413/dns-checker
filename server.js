@@ -7,12 +7,12 @@ const fs     = require('fs');
 const db_exists = fs.existsSync(common.db_file);
 
 async.waterfall([
-	createDb,
-	appStart,
-	upsert,
-	getUnresolved,
-	getIsps,
-	pn_publish
+	  createDb
+	, appStart
+	, upsert
+	//, getUnresolved
+	//, getIsps
+	//, pn_publish
 ]);
 
 function createDb ( callback ) {
@@ -47,13 +47,10 @@ function getUnresolved ( callback ) {
 }
 
 function getIsps( unresolved, callback ) {
-	//dont get isps for now
-	callback(null, unresolved);
-
-	// common.getIsps(unresolved)
-	// .then(function ( unresolvedWithIsp ) {
-	// 	callback(null, unresolvedWithIsp);
-	// });
+	common.getIsps(unresolved)
+	.then(function ( unresolvedWithIsp ) {
+		callback(null, unresolvedWithIsp);
+	});
 }
 
 function pn_publish ( unresolvedWithIsp, callback ) {
