@@ -1,9 +1,7 @@
 var CronJob = require('cron').CronJob;
 var app = require('./app.js');
 
-let interval = "*/10 * * * *";
-//let interval = "0-59 * * * *";
-//let interval = "0,30 * * * *";
+let interval = "*/15 * * * *";
 
 var job = new CronJob(interval, function() {
 		try {
