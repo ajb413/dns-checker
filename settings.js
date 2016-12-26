@@ -18,7 +18,7 @@ const pn_settings = {
 
 //SQlite local DB file name
 const db_file = 'dns_check.sqlite';
-const csv     = 'nameservers_test.csv';
+const csv     = 'nameservers.csv';
 
 //testing domains
 const test_domains = [
