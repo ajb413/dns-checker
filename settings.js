@@ -1,4 +1,4 @@
-//number of DNS to test in parallel 
+//number of DNS to test in parallel
 const concurrency_limit = 150;
 
 const dig_settings = {

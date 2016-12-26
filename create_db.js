@@ -21,6 +21,7 @@ function createDb () {
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
 					ip VARCHAR(255),
 					name VARCHAR(255),
+					country_id VARCHAR(255),
 					isp VARCHAR(255),
 					last_pass VARCHAR(255),
 					last_fail VARCHAR(255),
@@ -42,6 +43,7 @@ function createDb () {
 					db.run(`INSERT OR IGNORE INTO DNS (
 						ip,
 						name,
+						country_id,
 						isp,
 						last_pass,
 						last_fail,
@@ -52,10 +54,11 @@ function createDb () {
 						baidu,
 						wiki,
 						pubnub
-					) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+					) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 					[
 						dns.ip,
 						dns.name,
+						dns.country_id,
 						"",
 						"",
 						"",

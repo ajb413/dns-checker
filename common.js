@@ -44,6 +44,7 @@ let upsertQuery = `
 		id,
 		ip,
 		name,
+		country_id,
 		isp,
 		last_pass,
 		last_fail,
@@ -54,7 +55,7 @@ let upsertQuery = `
 		baidu,
 		wiki,
 		pubnub
-	) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+	) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `;
 
 function upsert ( rows ) {
@@ -66,6 +67,7 @@ function upsert ( rows ) {
 					  dns['id']
 					, dns['ip']
 					, dns['name']
+					, dns['country_id']
 					, dns['isp']
 					, dns['last_pass']
 					, dns['last_fail']
@@ -90,6 +92,7 @@ let unresolvedQuery = `
 		id,
 		ip,
 		name,
+		country_id,
 		last_pass,
 		last_fail,
 		pn_percent_resolve

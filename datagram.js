@@ -129,16 +129,19 @@ function dig ( dns, domain, settings ) {
 		});
 
 		client.on('message', ( response, server ) => {
-			
+
 			clearTimeout(timeoutInstance);
-			client.close();
+
+			try { client.close(); }
+			catch (error) { console.log(error); }
 
 			let didResolve = validateResponse(response);
 			resolve(didResolve);
 		});
 
 		function fail () {
-			client.close();
+			try { client.close(); }
+			catch (error) { console.log(error); }
 			resolve(false);
 		}
 	});
