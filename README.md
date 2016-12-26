@@ -1,8 +1,8 @@
 # dns-checker
 
-Check if a site is blocked using node.js to do `dig @ip domain`. Writes results to a sqlite db.
+Check if a site is blocked using node.js to do `dig @ip domain`. Writes results to a local sqlite db.
 
-Does not work if too many dig commands are run at a time.
+Does not work if too many digs are run at a time.
 
 Application settings are in settings.js
 
@@ -17,6 +17,13 @@ npm install
 npm start
 ```
 
+or run repeatedly cron style (interval set in cron.js):
+
+```
+npm install
+node cron.js
+```
+
 
 
 ```
@@ -24,6 +31,7 @@ npm start
 	"csvtojson"  : "1.0.3",
 	"native-dns" : "0.7.0",
 	"async"      : "2.1.4",
+	"cron"       : "1.2.1"
 	"sqlite3"    : "3.1.8",
 	"pubnub"     : "4.3.2"
 ```
