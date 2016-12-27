@@ -13,6 +13,7 @@ const dig      = require('./datagram.js')['dig'];
 let pn = new pubnub({
 	  "publishKey"   : settings.pn_settings.pn_pub_key
 	, "subscribeKey" : settings.pn_settings.pn_sub_key
+	, "secretKey"    : settings.pn_settings.secret_key
 });
 
 function pn_publish ( msg ) {
@@ -46,16 +47,20 @@ let upsertQuery = `
 		name,
 		country_id,
 		isp,
+		check_count,
 		last_pass,
 		last_fail,
-		pn_success_count,
-		pn_check_count,
-		pn_percent_resolve,
 		google,
-		baidu,
-		wiki,
-		pubnub
-	) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+		pubnub,
+		pndsn,
+		pnnet,
+		pn_success_count,
+		pn_percent_resolve,
+		dsn_success_count,
+		dsn_percent_resolve,
+		net_success_count,
+		net_percent_resolve
+	) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `;
 
 function upsert ( rows ) {
@@ -69,15 +74,19 @@ function upsert ( rows ) {
 					, dns['name']
 					, dns['country_id']
 					, dns['isp']
+					, dns['check_count']
 					, dns['last_pass']
 					, dns['last_fail']
-					, dns['pn_success_count']
-					, dns['pn_check_count']
-					, dns['pn_percent_resolve']
 					, dns['google']
-					, dns['baidu']
-					, dns['wiki']
 					, dns['pubnub']
+					, dns['pndsn']
+					, dns['pnnet']
+					, dns['pn_success_count']
+					, dns['pn_percent_resolve']
+					, dns['dsn_success_count']
+					, dns['dsn_percent_resolve']
+					, dns['net_success_count']
+					, dns['net_percent_resolve']
 				], function ( err ) {
 					if (err) reject();
 				});
@@ -97,7 +106,7 @@ let unresolvedQuery = `
 		last_fail,
 		pn_percent_resolve
 	FROM DNS
-	WHERE pubnub=0
+	WHERE google=1 and pubnub=0
 `;
 
 function getUnresolved () {

@@ -13,19 +13,22 @@ const dig_settings = {
 const pn_settings = {
 	  "pn_pub_key" : ''
 	, "pn_sub_key" : ''
+	, "secret_key" : ''
 	, "pn_channel" : 'dns_check'
 };
 
 //SQlite local DB file name
 const db_file = 'dns_check.sqlite';
-const csv     = 'nameservers.csv';
+const csv     = 'test.csv';
 
 //testing domains
 const test_domains = [
 	  { "name" : "google.com",        "key" : "google" }
-	, { "name" : "baidu.com",         "key" : "baidu" }
-	, { "name" : "wikipedia.com",     "key" : "wiki" }
+	//, { "name" : "baidu.com",         "key" : "baidu" }
+	//, { "name" : "wikipedia.com",     "key" : "wiki" }
 	, { "name" : "pubsub.pubnub.com", "key" : "pubnub" }
+	, { "name" : "ps.pndsn.com",      "key" : "pndsn" }
+	, { "name" : "pubsub.pubnub.net", "key" : "pnnet" }
 ];
 
 // logic for updating a DB row for a DNS after a dig for
@@ -38,7 +41,7 @@ function updateDnsRecord ( updatedDns, results ) {
 		}
 
 		let date = new Date().toISOString();
-		updatedDns['pn_check_count']++;
+		updatedDns['check_count']++;
 
 		//pubsub.pubnub.com was resolved
 		if (updatedDns['pubnub']) {
@@ -50,11 +53,28 @@ function updateDnsRecord ( updatedDns, results ) {
 			updatedDns['last_fail'] = date;
 		}
 
-		let num = updatedDns['pn_success_count'];
-		let den = updatedDns['pn_check_count'];
+		if (updatedDns['pndsn']) {
+			updatedDns['dsn_success_count']++;
+		}
 
-		updatedDns['pn_percent_resolve'] =
-		100 * ( num / den ).toFixed(2);
+		if (updatedDns['pnnet']) {
+			updatedDns['net_success_count']++;
+		}
+
+		updatedDns['pn_percent_resolve'] = 100 * (
+			updatedDns['pn_success_count'] /
+			updatedDns['check_count']
+		).toFixed(2);
+
+		updatedDns['dsn_percent_resolve'] = 100 * (
+			updatedDns['dsn_success_count'] /
+			updatedDns['check_count']
+		).toFixed(2);
+
+		updatedDns['net_percent_resolve'] = 100 * (
+			updatedDns['net_success_count'] /
+			updatedDns['check_count']
+		).toFixed(2);
 
 		resolve(updatedDns);
 	});

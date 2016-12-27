@@ -60,7 +60,7 @@ function getIsps( unresolved, callback ) {
 }
 
 function pn_publish ( unresolvedWithIsp, callback ) {
-	for ( dns of unresolvedWithIsp ) {
+	for (let dns of unresolvedWithIsp ) {
 		common.pn_publish({
 			  "id"         : dns['id']
 			, "ip"         : dns['ip']

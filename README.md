@@ -2,6 +2,8 @@
 
 Check if a site is blocked using node.js to do `dig @ip domain`. Writes results to a local sqlite db.
 
+Currently has google.com as a control domain.
+
 Does not work if too many digs are run at a time.
 
 Application settings are in settings.js

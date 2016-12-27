@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "async": "latest",
-    "cron": "^1.2.1",
     "csvtojson": "latest",
     "native-dns": "latest",
     "pubnub": "latest",
