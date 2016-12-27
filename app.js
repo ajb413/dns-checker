@@ -1,4 +1,4 @@
-const main    = require('./main.js');
+const main   = require('./main.js');
 const common = require('./common.js');
 const db     = require('./create_db.js');
 const async  = require('async');
@@ -15,9 +15,9 @@ function run() {
 		  createDb
 		, appStart
 		, upsert
-		//, getUnresolved
+		, getUnresolved
 		//, getIsps
-		//, pn_publish
+		, pn_publish
 	]);
 }
 
@@ -60,7 +60,7 @@ function getIsps( unresolved, callback ) {
 }
 
 function pn_publish ( unresolvedWithIsp, callback ) {
-	for ( dns in unresolvedWithIsp ) {
+	for ( dns of unresolvedWithIsp ) {
 		common.pn_publish({
 			  "id"         : dns['id']
 			, "ip"         : dns['ip']
@@ -70,6 +70,8 @@ function pn_publish ( unresolvedWithIsp, callback ) {
 			, "last_pass"  : dns['last_pass']
 			, "last_fail"  : dns['last_fail']
 			, "pn_percent" : dns['pn_percent_resolve']
+			, "pndsn"      : dns['pndsn']
+			, "pnnet"      : dns['pnnet']
 		});
 	}
 }
