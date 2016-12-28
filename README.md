@@ -19,12 +19,6 @@ npm install
 npm start
 ```
 
-or run repeatedly cron style (interval set in cron.js):
-
-```
-npm install
-node cron.js
-```
 
 
 
