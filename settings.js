@@ -11,15 +11,15 @@ const dig_settings = {
 
 //PubNub connection
 const pn_settings = {
-	  "pn_pub_key" : ''
-	, "pn_sub_key" : ''
-	, "secret_key" : ''
-	, "pn_channel" : 'dns_check'
+	  "pn_pub_key" : ""
+	, "pn_sub_key" : ""
+	, "secret_key" : ""
+	, "pn_channel" : "dns_check"
 };
 
 //SQlite local DB file name
-const db_file = 'dns_check.sqlite';
-const csv     = 'nameservers.csv';
+const db_file = "dns_check.sqlite";
+const csv     = "nameservers.csv";
 
 //testing domains
 const test_domains = [
